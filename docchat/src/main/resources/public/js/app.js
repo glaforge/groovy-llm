@@ -6,6 +6,7 @@ createApp({
         const query = ref("");
         const chat = ref([]);
         const errorMsg = ref("");
+        const ongoingCall = ref(false);
         const chatId = nanoid(10);
 
         const sendQuery = async () => {
@@ -13,6 +14,7 @@ createApp({
             errorMsg.value = "";
 
             try {
+                ongoingCall.value = true;
                 const response = await fetch("/query", {
                     method: "POST",
                     headers: {
@@ -29,11 +31,12 @@ createApp({
                 console.log(questionAnswersOrError);
                 if (!response.ok) {
                     errorMsg.value = questionAnswersOrError;
-                    throw new Error("[Response was not OK] " + questionAnswersOrError);
                 }
                 chat.value.push({ answer: questionAnswersOrError });
             } catch (e) {
                 console.error(e);
+            } finally {
+                ongoingCall.value = false;
             }
 
             query.value = '';
@@ -43,7 +46,8 @@ createApp({
             query,
             chat,
             sendQuery,
-            errorMsg
+            errorMsg,
+            ongoingCall
         }
     }
 }).mount('#app')

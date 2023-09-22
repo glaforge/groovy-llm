@@ -42,8 +42,8 @@
         </div>
     </div>
     <div class="form">
-        <textarea v-model="query" placeholder="Please ask your question"></textarea>
-        <button @click="sendQuery">Send</button>
+        <textarea v-model="query" placeholder="Please ask your question" :disabled="ongoingCall"></textarea>
+        <button @click="sendQuery" :disabled="ongoingCall">Send</button>
     </div>
 </div>
 </body>

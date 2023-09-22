@@ -103,3 +103,8 @@ button {
     border-radius: 10px;
     font-weight: bold;
 }
+
+button:disabled {
+    background-color: var(--groovy-lightgray);
+    color: darkgray;
+}

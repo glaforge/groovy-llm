@@ -1,0 +1,105 @@
+:root {
+    --groovy-dark-blue: #286B86;
+    --groovy-light-blue: #4298b8;
+    --groovy-orange: #db4800;
+    --groovy-lightgray: #f2f2f2;
+}
+
+html {
+    max-width: 70ch;
+    padding: 1em 1em;
+    margin: auto;
+    line-height: 1.75;
+    font-size: 1.25em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 3em 0 1em;
+}
+
+p, ul, ol {
+    margin-bottom: 1em;
+    color: #1d1d1d;
+    font-family: sans-serif;
+}
+
+header {
+    font-family: sans-serif;
+    font-size: 1.5em;
+    background-color: var(--groovy-dark-blue);
+    color: white;
+    padding: 10px 20px 10px 20px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    margin: 0 0 20px;
+}
+
+#container {
+    align-content: center;
+    width: 100%;
+}
+
+div.right, div.left, div.error {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-bottom: 10px;
+}
+
+div.right {
+    justify-content: right;
+}
+
+div.left, div.error {
+    justify-content: left;
+}
+
+div.right > *, div.left > *, div.error > * {
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
+    width: fit-content;
+    margin: 0;
+}
+
+div.right > * {
+    text-align: right;
+    background-color: var(--groovy-light-blue);
+    color: white;
+}
+
+div.left > * {
+    text-align: left;
+    background-color: var(--groovy-lightgray);
+    color: black;
+    overflow: auto;
+}
+
+div.error * {
+    text-align: left;
+    background-color: var(--groovy-orange);
+    color: white;
+    overflow: auto;
+    margin-bottom: 0;
+}
+
+form *, .form * {
+    margin-bottom: 10px;
+    font-family: sans-serif;
+    font-size: 1em;
+    padding: 10px;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+}
+
+button {
+    float: right;
+    background-color: var(--groovy-orange);
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+}

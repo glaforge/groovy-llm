@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Doc Chat with Generative AI</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="module" src="/js/app.js"></script>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    &starf; <strong>Apache Groovy</strong> — LLM Doc Chatbot
+</header>
+<div id="app">
+    <div id="chat">
+        <div class='left'>
+            <p>
+                Welcome to the <a href="https://groovy-lang.org/">Apache Groovy</a>
+                documentation chatbot. I'm a Large-Language-Model trained on the online Groovy
+                <a href="https://groovy-lang.org/single-page-documentation.html">documentation</a>.
+                Feel free to ask me any question about the Groovy programming language.
+            </p>
+        </div>
+        <template v-for="questionAnswer in chat">
+            <div class="right" v-if="questionAnswer.question !== undefined">
+                <p>{{ questionAnswer.question }}</p>
+            </div>
+            <div class="left" v-if="questionAnswer.answer !== undefined">
+                <span v-html="questionAnswer.answer"></span>
+            </div>
+        </template>
+        <div class="error" v-show="!!errorMsg" style="display: none">
+            <div>
+                <p>An error occurred</p>
+                <code>
+                    {{ errorMsg }}
+                </code>
+                <p>Please reload the page to start anew.</p>
+            </div>
+        </div>
+    </div>
+    <div class="form">
+        <textarea v-model="query" placeholder="Please ask your question"></textarea>
+        <button @click="sendQuery">Send</button>
+    </div>
+</div>
+</body>
+</html>

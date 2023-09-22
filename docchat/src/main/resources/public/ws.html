@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Doc Chat with Generative AI</title>
+    <script src="https://unpkg.com/htmx.org@1.9.5"
+            integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header>
+    &starf; <strong>Apache Groovy</strong> — LLM Doc Chatbot
+</header>
+<div hx-ws="connect:/chat" id="container">
+    <div id="chat">
+        <div class='left'>
+            <p>
+                Welcome to the <a href="https://groovy-lang.org/">Apache Groovy</a>
+                documentation chatbot. I'm a Large-Language-Model trained on the online Groovy
+                <a href="https://groovy-lang.org/single-page-documentation.html">documentation</a>.
+                Feel free to ask me any question about the Groovy programming language.
+            </p>
+        </div>
+    </div>
+    <form hx-ws="send" id="chat-form">
+        <textarea name="message" id="message-area"></textarea>
+        <button type="submit">Send</button>
+    </form>
+</div>
+</body>
+</html>

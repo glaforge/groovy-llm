@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: com.google.cloud.devrel.docchat
+testFramework: spock
+sourceLanguage: java
+buildTool: gradle
+features: [app-name, gradle, http-client-test, java, java-application, logback, micronaut-aot, micronaut-build, netty-server, properties, readme, serialization-jackson, shade, spock, websocket]

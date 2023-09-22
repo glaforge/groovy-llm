@@ -9,6 +9,7 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.data.document.splitter.DocumentSplitters
 import dev.langchain4j.data.segment.TextSegment
+import dev.langchain4j.data.document.transformer.HtmlTextExtractor
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -29,7 +30,8 @@ def fetchedHtmlDocument = Paths.get(GENERATED_DIR, DOC_FILENAME)
 fetchedHtmlDocument << new URL('https://docs.groovy-lang.org/latest/html/documentation/').text
 
 println "[${now().format('kk:mm:ss')}] Loading documentation"
-def document = FileSystemDocumentLoader.loadDocument(fetchedHtmlDocument);
+def document = new HtmlTextExtractor('#content', [:], true)
+        .transform(FileSystemDocumentLoader.loadDocument(fetchedHtmlDocument))
 
 def vertexEmbeddingModel = VertexAiEmbeddingModel.builder()
         .endpoint("us-central1-aiplatform.googleapis.com:443")
@@ -48,7 +50,7 @@ def ingestor = EmbeddingStoreIngestor.builder()
         .documentSplitter(DocumentSplitters.recursive(500))
         .embeddingModel(embeddingModel)
         .embeddingStore(embeddingStore)
-        .build();
+        .build()
 ingestor.ingest(document)
 
 println "[${now().format('kk:mm:ss')}] Saving vector embeddings file"

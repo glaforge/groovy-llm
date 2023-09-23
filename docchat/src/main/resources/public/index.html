@@ -7,6 +7,12 @@
     <title>Doc Chat with Generative AI</title>
     <link rel="stylesheet" href="/css/style.css">
     <script type="module" src="/js/app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/groovy.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -43,7 +49,8 @@
     </div>
     <div class="form">
         <textarea v-model="query" placeholder="Please ask your question" :disabled="ongoingCall"></textarea>
-        <button @click="sendQuery" :disabled="ongoingCall">Send</button>
+        <button @click="sendQuery" :disabled="ongoingCall || !query">Send</button>
+        <span class="loader" v-show="ongoingCall"></span>
     </div>
 </div>
 </body>

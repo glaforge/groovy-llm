@@ -15,16 +15,22 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
     margin: 3em 0 1em;
+    font-family: Roboto, sans-serif;
+    font-weight: bold;
 }
 
 p, ul, ol {
     margin-bottom: 1em;
     color: #1d1d1d;
-    font-family: sans-serif;
+    font-family: Roboto, sans-serif;
+}
+
+code, pre > code {
+    font-family: "Fira Code", monospace;
 }
 
 header {
-    font-family: sans-serif;
+    font-family: Roboto, sans-serif;
     font-size: 1.5em;
     background-color: var(--groovy-dark-blue);
     color: white;
@@ -83,7 +89,7 @@ div.error * {
 
 form *, .form * {
     margin-bottom: 10px;
-    font-family: sans-serif;
+    font-family: Roboto, sans-serif;
     font-size: 1em;
     padding: 10px;
 }
@@ -108,3 +114,29 @@ button:disabled {
     background-color: var(--groovy-lightgray);
     color: darkgray;
 }
+
+/* loader spinner */
+.loader{
+    display: block;
+    position: relative;
+    height: 20px;
+    width: 140px;
+    background-image:
+            linear-gradient(#FFF 20px, transparent 0),
+            linear-gradient(#FFF 20px, transparent 0),
+            linear-gradient(#FFF 20px, transparent 0),
+            linear-gradient(#FFF 20px, transparent 0);
+    background-repeat: no-repeat;
+    background-size: 20px auto;
+    background-position: 0 0, 40px 0, 80px 0, 120px 0;
+    animation: pgfill 1s linear infinite;
+}
+
+@keyframes pgfill {
+    0% {   background-image: linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0); }
+    25% {   background-image: linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0); }
+    50% {   background-image: linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0); }
+    75% {   background-image: linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0); }
+    100% {   background-image: linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(var(--groovy-orange) 20px, transparent 0), linear-gradient(var(--groovy-orange) 20px, transparent 0); }
+}
+

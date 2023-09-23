@@ -1,4 +1,4 @@
-import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+import {createApp, nextTick, ref} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import { nanoid } from 'https://cdn.jsdelivr.net/npm/nanoid/nanoid.js';
 
 createApp({
@@ -29,16 +29,18 @@ createApp({
                 });
                 const questionAnswersOrError = await response.text();
                 console.log(questionAnswersOrError);
-                if (!response.ok) {
-                    errorMsg.value = questionAnswersOrError;
+                if (response.ok) {
+                    chat.value.push({answer: questionAnswersOrError});
+                    await nextTick();
+                    hljs.highlightAll();
+                } else {
+                    errorMsg.value = JSON.parse(questionAnswersOrError)._embedded.errors[0].message;
                 }
-                chat.value.push({ answer: questionAnswersOrError });
             } catch (e) {
                 console.error(e);
             } finally {
                 ongoingCall.value = false;
             }
-
             query.value = '';
         };
 

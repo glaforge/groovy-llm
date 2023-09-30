@@ -46,7 +46,14 @@ public class LLMQueryService {
     private final MessageWindowChatMemory chatMemory;
 
     public LLMQueryService() {
-        this.embeddingModel = VertexAiEmbeddingModel.builder().endpoint("us-central1-aiplatform.googleapis.com:443").project("genai-java-demos").location("us-central1").publisher("google").modelName("textembedding-gecko@001").maxRetries(3).build();
+        this.embeddingModel = VertexAiEmbeddingModel.builder()
+            .endpoint("us-central1-aiplatform.googleapis.com:443")
+            .project("genai-java-demos")
+            .location("us-central1")
+            .publisher("google")
+            .modelName("textembedding-gecko@001")
+            .maxRetries(3)
+            .build();
 
         this.chatModel = VertexAiChatModel.builder()
             .endpoint("us-central1-aiplatform.googleapis.com:443")
@@ -111,13 +118,15 @@ public class LLMQueryService {
             .maxMessages(11)
             .build();
 
-        System.out.println("chatMemory (" + chatId + ") size = " + chatMemory.messages().size());
+        EmbeddingStoreRetriever retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
+        EmbeddingStoreRetrieverWrapper retrieverWrapper = new EmbeddingStoreRetrieverWrapper(retriever);
 
         ConversationalRetrievalChain chain = ConversationalRetrievalChain.builder()
             .chatLanguageModel(chatModel)
             .chatMemory(chatMemory)
             .promptTemplate(from)
-            .retriever(EmbeddingStoreRetriever.from(embeddingStore, embeddingModel)).build();
+            .retriever(retrieverWrapper)
+            .build();
 
         System.out.println("query = " + query);
 

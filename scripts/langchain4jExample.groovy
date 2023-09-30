@@ -17,6 +17,3 @@ VertexAiChatModel vertexAiChatModel = VertexAiChatModel.builder()
 
 def response = vertexAiChatModel.sendUserMessage("What is the best Large Language Model?");
 println response.text()
-
-// create a groovy closure that implements the fibonacci series
-

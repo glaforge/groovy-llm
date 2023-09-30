@@ -1,7 +1,7 @@
-@Grab('dev.langchain4j:langchain4j-vertex-ai:0.22.0')
+@Grab('dev.langchain4j:langchain4j-vertex-ai:0.23.0')
 import dev.langchain4j.model.vertexai.VertexAiEmbeddingModel
 
-@Grab('dev.langchain4j:langchain4j:0.22.0')
+@Grab('dev.langchain4j:langchain4j:0.23.0')
 import dev.langchain4j.data.document.FileSystemDocumentLoader
 import dev.langchain4j.data.embedding.Embedding
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
@@ -10,6 +10,7 @@ import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.data.document.splitter.DocumentSplitters
 import dev.langchain4j.data.segment.TextSegment
 import dev.langchain4j.data.document.transformer.HtmlTextExtractor
+import dev.langchain4j.model.output.Response
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -47,7 +48,7 @@ def savedStorePath = Paths.get(GENERATED_DIR, SAVED_FILENAME)
 
 println "[${now().format('kk:mm:ss')}] Splitting document and creating in-memory embedding store"
 def ingestor = EmbeddingStoreIngestor.builder()
-        .documentSplitter(DocumentSplitters.recursive(500))
+        .documentSplitter(DocumentSplitters.recursive(1000, 200))
         .embeddingModel(embeddingModel)
         .embeddingStore(embeddingStore)
         .build()
@@ -78,17 +79,17 @@ class BatchedEmbeddingModel implements EmbeddingModel {
         this.paddingTimeMillis = paddingTimeMillis
     }
 
-    List<Embedding> embedAll(List<TextSegment> textSegments) {
+    Response<List<Embedding>> embedAll(List<TextSegment> textSegments) {
         def response
         new ForkJoinPool(numberOfThreads).submit { ->
             response = textSegments.collate(batchSize)
                     .parallelStream().map { batchSegments ->
-                def result = embeddingModel.embedAll(batchSegments)
+                def result = embeddingModel.embedAll(batchSegments).content()
                 sleep paddingTimeMillis
                 return result
             }.collect(Collectors.toList())
                     .flatten()
         }.get()
-        return response
+        return Response.from(response)
     }
 }

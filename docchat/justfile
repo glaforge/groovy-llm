@@ -9,4 +9,4 @@ build:
     gcloud builds submit -t $CLOUD_REGION-docker.pkg.dev/$PROJECT_ID/containers/$CONTAINER_NAME:v1
 
 deploy: build
-     gcloud run deploy $CONTAINER_NAME --image=$CLOUD_REGION-docker.pkg.dev/$PROJECT_ID/containers/$CONTAINER_NAME:v1
+     gcloud run deploy $CONTAINER_NAME --region=$CLOUD_REGION --cpu=$CPU --memory=$MEMORY --image=$CLOUD_REGION-docker.pkg.dev/$PROJECT_ID/containers/$CONTAINER_NAME:v1

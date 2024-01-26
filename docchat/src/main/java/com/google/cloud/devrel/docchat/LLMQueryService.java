@@ -10,10 +10,12 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 import dev.langchain4j.chain.ConversationalRetrievalChain;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.vertexai.VertexAiEmbeddingModel;
 import dev.langchain4j.model.vertexai.VertexAiGeminiChatModel;
 import dev.langchain4j.retriever.EmbeddingStoreRetriever;
+import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 
 import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
@@ -26,12 +28,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Singleton
 public class LLMQueryService {
 
-    private final PromptTemplate from;
+    private final PromptTemplate promptTemplate;
 
     private final VertexAiEmbeddingModel embeddingModel;
 
@@ -49,7 +52,7 @@ public class LLMQueryService {
             .project("genai-java-demos")
             .location("us-central1")
             .publisher("google")
-            .modelName("textembedding-gecko@001")
+            .modelName("textembedding-gecko@latest")
             .maxRetries(3)
             .build();
 
@@ -76,9 +79,10 @@ public class LLMQueryService {
         this.embeddingStore = InMemoryEmbeddingStore.fromJson(storeJson);
         System.out.println("In-memory embedding store loaded");
 
-        this.retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
+        this.retriever = new WrapperRetriever(embeddingStore, embeddingModel, 5, null);
+//        this.retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
 
-        this.from = PromptTemplate.from("""
+        this.promptTemplate = PromptTemplate.from("""
             You are an expert in the Apache Groovy programming language.
             You are also knowledgeable in the Java language, but be sure to write idiomatic Groovy code in your answers.
             You excel at teaching and explaining concepts of the language.
@@ -88,8 +92,8 @@ public class LLMQueryService {
             Using the Groovy language, {{question}}
                         
             Base your answer exclusively on the following information from the Groovy documentation:
-                        
-            {{information}}))
+            
+            {{information}}
             """);
 
         this.chatMemoryStore = new InMemoryChatMemoryStore();
@@ -99,13 +103,13 @@ public class LLMQueryService {
         MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
             .chatMemoryStore(chatMemoryStore)
             .id(chatId)
-            .maxMessages(10)
+            .maxMessages(11)
             .build();
 
         ConversationalRetrievalChain chain = ConversationalRetrievalChain.builder()
             .chatLanguageModel(geminiChatModel)
             .chatMemory(chatMemory)
-            .promptTemplate(from)
+            .promptTemplate(promptTemplate)
             .retriever(retriever)
             .build();
 
@@ -125,5 +129,20 @@ public class LLMQueryService {
         Node document = parser.parse(markdown);
 
         return renderer.render(document);
+    }
+
+    class WrapperRetriever extends EmbeddingStoreRetriever {
+        public WrapperRetriever(EmbeddingStore<TextSegment> embeddingStore, EmbeddingModel embeddingModel, int maxResults, Double minScore) {
+            super(embeddingStore, embeddingModel, maxResults, minScore);
+        }
+
+        @Override
+        public List<TextSegment> findRelevant(String text) {
+            List<TextSegment> relevantSegments = super.findRelevant(text);
+            for (TextSegment segment : relevantSegments) {
+                System.out.println("\n-------------\n" + segment.text());
+            }
+            return relevantSegments;
+        }
     }
 }

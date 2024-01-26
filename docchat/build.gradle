@@ -10,6 +10,7 @@ group = "com.google.cloud.devrel.docchat"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -18,9 +19,9 @@ dependencies {
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     runtimeOnly("ch.qos.logback:logback-classic")
     testImplementation("io.micronaut:micronaut-http-client")
-    implementation("dev.langchain4j:langchain4j:0.25.0")
-    implementation("dev.langchain4j:langchain4j-vertex-ai:0.25.0")
-    implementation("dev.langchain4j:langchain4j-vertex-ai-gemini:0.25.0")
+    implementation("dev.langchain4j:langchain4j:0.26.0-SNAPSHOT")
+    implementation("dev.langchain4j:langchain4j-vertex-ai:0.26.0-SNAPSHOT")
+    implementation("dev.langchain4j:langchain4j-vertex-ai-gemini:0.26.0-SNAPSHOT")
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
 }
 

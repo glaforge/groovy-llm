@@ -11,8 +11,8 @@ import dev.langchain4j.chain.ConversationalRetrievalChain;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.input.PromptTemplate;
-import dev.langchain4j.model.vertexai.VertexAiChatModel;
 import dev.langchain4j.model.vertexai.VertexAiEmbeddingModel;
+import dev.langchain4j.model.vertexai.VertexAiGeminiChatModel;
 import dev.langchain4j.retriever.EmbeddingStoreRetriever;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 
@@ -35,15 +35,13 @@ public class LLMQueryService {
 
     private final VertexAiEmbeddingModel embeddingModel;
 
-    private final VertexAiChatModel chatModel;
+    private final VertexAiGeminiChatModel geminiChatModel;
 
     private final InMemoryEmbeddingStore<TextSegment> embeddingStore;
 
-    private final ConversationalRetrievalChain chain;
-
     private final InMemoryChatMemoryStore chatMemoryStore;
 
-    private final MessageWindowChatMemory chatMemory;
+    private final EmbeddingStoreRetriever retriever;
 
     public LLMQueryService() {
         this.embeddingModel = VertexAiEmbeddingModel.builder()
@@ -55,14 +53,12 @@ public class LLMQueryService {
             .maxRetries(3)
             .build();
 
-        this.chatModel = VertexAiChatModel.builder()
-            .endpoint("us-central1-aiplatform.googleapis.com:443")
+        this.geminiChatModel = VertexAiGeminiChatModel.builder()
             .project("genai-java-demos")
             .location("us-central1")
-            .publisher("google")
-            .modelName("chat-bison@001")
-            .temperature(0.1)
-            .maxRetries(1)
+            .modelName("gemini-pro")
+            .temperature(0.3f)
+            .maxRetries(3)
             .build();
 
         Optional<URL> resource = new ResourceResolver().getResource("classpath:saved-embedding-store.json");
@@ -80,60 +76,43 @@ public class LLMQueryService {
         this.embeddingStore = InMemoryEmbeddingStore.fromJson(storeJson);
         System.out.println("In-memory embedding store loaded");
 
-        this.from = PromptTemplate.from("You are an expert in the Apache Groovy programming language.\n" +
-            "You are also knowledgeable in the Java language, but be sure to write idiomatic Groovy code in your answers.\n" +
-            "You excel at teaching and explaining concepts of the language.\n" +
-            "If you don't know the answer to the question, say that you don't know the answer, and that the user should refer to the Groovy documentation.\n" +
-            "Answer the following question to the best of your ability:\n\n" +
-            "Using the Groovy language, {{question}}\n\n" +
-            "Base your answer exclusively on the following information from the Groovy documentation:\n\n" + "{{information}}))\n\n" /* +
-                    "In your answers, make sure to quote the above information that lead to your answer by appending them as a reference." */);
+        this.retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
+
+        this.from = PromptTemplate.from("""
+            You are an expert in the Apache Groovy programming language.
+            You are also knowledgeable in the Java language, but be sure to write idiomatic Groovy code in your answers.
+            You excel at teaching and explaining concepts of the language.
+            If you don't know the answer to the question, say that you don't know the answer, and that the user should refer to the Groovy documentation.
+            Answer the following question to the best of your ability:
+                        
+            Using the Groovy language, {{question}}
+                        
+            Base your answer exclusively on the following information from the Groovy documentation:
+                        
+            {{information}}))
+            """);
 
         this.chatMemoryStore = new InMemoryChatMemoryStore();
-
-        this.chatMemory = MessageWindowChatMemory.builder()
-            .maxMessages(11)
-            .build();
-
-        this.chain = ConversationalRetrievalChain.builder()
-            .chatLanguageModel(chatModel)
-            .chatMemory(chatMemory)
-            .promptTemplate(from)
-            .retriever(EmbeddingStoreRetriever.from(embeddingStore, embeddingModel)).build();
-
-        System.out.println("Groovy knowledge ready");
-    }
-
-    public String execute(String query) {
-        String response = chain.execute(query);
-        System.out.println("response = " + response);
-
-        return renderMarkdownToHtml(response);
     }
 
     public String executeWithMemory(String query, String chatId) {
         MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
-            .id(chatId)
             .chatMemoryStore(chatMemoryStore)
-            .maxMessages(11)
+            .id(chatId)
+            .maxMessages(10)
             .build();
 
-        EmbeddingStoreRetriever retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
-        EmbeddingStoreRetrieverWrapper retrieverWrapper = new EmbeddingStoreRetrieverWrapper(retriever);
-
         ConversationalRetrievalChain chain = ConversationalRetrievalChain.builder()
-            .chatLanguageModel(chatModel)
+            .chatLanguageModel(geminiChatModel)
             .chatMemory(chatMemory)
             .promptTemplate(from)
-            .retriever(retrieverWrapper)
+            .retriever(retriever)
             .build();
 
         System.out.println("query = " + query);
-
         String response = chain.execute(query);
 
         System.out.println("response = " + response);
-
         return renderMarkdownToHtml(response);
     }
 

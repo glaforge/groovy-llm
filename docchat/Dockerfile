@@ -1,5 +1,6 @@
 FROM openjdk:17-slim as build
 WORKDIR /workspace/app
+COPY libs libs
 COPY gradle gradle
 COPY gradle.properties gradle.properties
 COPY build.gradle settings.gradle gradlew ./

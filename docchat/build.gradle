@@ -10,7 +10,7 @@ group = "com.google.cloud.devrel.docchat"
 
 repositories {
     mavenCentral()
-    mavenLocal()
+//    mavenLocal()
 }
 
 dependencies {
@@ -19,12 +19,22 @@ dependencies {
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     runtimeOnly("ch.qos.logback:logback-classic")
     testImplementation("io.micronaut:micronaut-http-client")
-    implementation("dev.langchain4j:langchain4j:0.26.0-SNAPSHOT")
-    implementation("dev.langchain4j:langchain4j-vertex-ai:0.26.0-SNAPSHOT")
-    implementation("dev.langchain4j:langchain4j-vertex-ai-gemini:0.26.0-SNAPSHOT")
+
+    implementation fileTree(dir: 'libs/snapshots', include: '*.jar')
+    implementation fileTree(dir: 'libs/allDeps', include: '*.jar')
+
+//    implementation("dev.langchain4j:langchain4j:0.25.0")
+//    implementation("dev.langchain4j:langchain4j-vertex-ai:0.25.0")
+//    implementation("dev.langchain4j:langchain4j-vertex-ai-gemini:0.25.0")
+
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
 }
 
+task copyDeps(type: Copy) {
+    from configurations.optimizedRuntimeClasspath
+    into "libs/allDeps"
+    exclude "**/langchain4j*.jar"
+}
 
 application {
     mainClass.set("com.google.cloud.devrel.docchat.Application")
@@ -54,6 +64,4 @@ micronaut {
         optimizeNetty = true
     }
 }
-
-
 

@@ -79,8 +79,7 @@ public class LLMQueryService {
         this.embeddingStore = InMemoryEmbeddingStore.fromJson(storeJson);
         System.out.println("In-memory embedding store loaded");
 
-        this.retriever = new WrapperRetriever(embeddingStore, embeddingModel, 5, null);
-//        this.retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
+        this.retriever = EmbeddingStoreRetriever.from(embeddingStore, embeddingModel);
 
         this.promptTemplate = PromptTemplate.from("""
             You are an expert in the Apache Groovy programming language.
@@ -129,20 +128,5 @@ public class LLMQueryService {
         Node document = parser.parse(markdown);
 
         return renderer.render(document);
-    }
-
-    class WrapperRetriever extends EmbeddingStoreRetriever {
-        public WrapperRetriever(EmbeddingStore<TextSegment> embeddingStore, EmbeddingModel embeddingModel, int maxResults, Double minScore) {
-            super(embeddingStore, embeddingModel, maxResults, minScore);
-        }
-
-        @Override
-        public List<TextSegment> findRelevant(String text) {
-            List<TextSegment> relevantSegments = super.findRelevant(text);
-            for (TextSegment segment : relevantSegments) {
-                System.out.println("\n-------------\n" + segment.text());
-            }
-            return relevantSegments;
-        }
     }
 }

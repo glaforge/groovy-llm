@@ -2,15 +2,11 @@
 import dev.langchain4j.model.vertexai.VertexAiEmbeddingModel
 
 @Grab('dev.langchain4j:langchain4j:0.24.0')
-import dev.langchain4j.data.document.FileSystemDocumentLoader
-import dev.langchain4j.data.embedding.Embedding
+import dev.langchain4j.data.document.loader.FileSystemDocumentLoader
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
-import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.data.document.splitter.DocumentSplitters
-import dev.langchain4j.data.segment.TextSegment
 import dev.langchain4j.data.document.transformer.HtmlTextExtractor
-import dev.langchain4j.model.output.Response
 
 import java.nio.file.Paths
 import static java.time.LocalTime.now

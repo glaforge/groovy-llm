@@ -6,18 +6,14 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-
 import dev.langchain4j.chain.ConversationalRetrievalChain;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.vertexai.VertexAiEmbeddingModel;
 import dev.langchain4j.model.vertexai.VertexAiGeminiChatModel;
 import dev.langchain4j.retriever.EmbeddingStoreRetriever;
-import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
-
 import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
 import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.io.Readable;
@@ -28,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Singleton

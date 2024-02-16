@@ -1,7 +1,7 @@
 ## Apache Groovy documentation chatbot powered by Gemini
 
 This demo application lets users ask questions about the [Apache Groovy](https://groovy-lang.org/) documentation.
-It is a chatbot powered by the [PaLM 2](https://ai.google/discover/palm2/) Large Language Model created by Google.
+It is a chatbot powered by the [Gemini](https://deepmind.google/technologies/gemini/) Large Language Model created by Google.
 The application is developed using the Groovy programming language, and the [Micronaut](https://micronaut.io) framework.
 The frontend is built using [Vue.js](https://vuejs.org/).
 
